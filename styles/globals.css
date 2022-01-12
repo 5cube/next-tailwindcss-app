@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  #__next {
+    @apply text-gray-900 antialiased;
+    @apply flex flex-col min-h-screen h-full;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-screen-lg mx-auto px-4 sm:px-8;
+  }
+}

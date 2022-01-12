@@ -2,15 +2,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import type { Item } from '../data'
+import type { IItem } from '../data'
+import Nav from '../components/Nav'
+import Footer from '../components/Footer'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const Home = () => {
-  const { data, error } = useSWR<Item[]>('/api/items', fetcher)
-
-  if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading...</div>
+  const { data, error } = useSWR<IItem[]>('/api/items', fetcher)
 
   return (
     <>
@@ -20,31 +19,33 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto px-6 py-16">
-        <h1 className="text-3xl font-bold underline">
-          Hello world!
-        </h1>
-        <div>
-          {data.map((item) => (
-            <div key={item.id}>
-              <Link href="/items/[id]" as={`/items/${item.id}`}>{item.content}</Link>
+      <main className="container grow py-10">
+        {error ? (
+          <div>Failed to load</div>
+        ) : !data ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <Nav items={[{ text: 'Home' }]} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-1 gap-y-1">
+              {data.map((item) => (
+                <Link key={item.id} href="/items/[id]" as={`/items/${item.id}`}>
+                  <div className="relative rounded-lg cursor-pointer">
+                    {item.media.slice(0, 1).map((img, i) => (
+                      <div key={i}>
+                        <Image src={img.url} width={img.width} height={img.height} className="rounded-lg" />
+                        <h4 className="text-white md:text-lg font-bold absolute left-0 bottom-0 pb-4 px-4">{item.title}</h4>
+                      </div>
+                    ))}
+                  </div>
+                </Link>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </main>
 
-      <footer className="container mx-auto px-6">
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className="h-4 ml-2">
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <Footer />
     </>
   )
 }

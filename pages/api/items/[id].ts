@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Item } from '../../../data'
+import type { IItem } from '../../../data'
 import { items } from '../../../data'
 
 export default function itemHandler(
   { query: { id } }: NextApiRequest,
-  res: NextApiResponse<Item | { message: string }>
+  res: NextApiResponse<IItem | { message: string }>
 ) {
   const filtered = items.filter((p) => p.id === Number(id))
 
